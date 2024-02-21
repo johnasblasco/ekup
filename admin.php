@@ -5,12 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        
+    *{
+        margin:0;
+        font-family: monospace;
+    }
+
+
+    table {
+        display: none;
+        position: absolute;
+        top: 20%;
+        left:  20%;
+        width: 1000px;
+        height: 500px;
+        
+    }
+
+    table h2{
+        color: #F4DFC8;
+    }
+
+    table th{
+        color: #31393c;
+        background: #3e96f4;
+    }
+
+    table td{
+        color: #191717;
+        text-align: center;
+        vertical-align: middle;
+    }
+    #ed{
+        border: 1px solid #4283e8;
+        background-color: #4283e8;
+        padding: 1vh 1vw;
+        color: #F1EFEF;
+    }
+    #del{
+        border: 1px solid #bc1b22;
+        background-color: #bc1b22;
+        padding: 1vh 1vw;
+        color: #F1EFEF;
+    }
+
+    #del:hover{
+        background-color: #F1EFEF;
+        color: #bc1b22;
+    }
+    #ed:hover{
+        background-color: #F1EFEF;
+        color: #4283e8;
+    }
+
+    /* settings */
+    .settings thead th{
+        color: #Fff;
+        padding: 1vh 1vw;
+    }
+    .settings tbody{
+        background-color: #ccc7bf;
+    }
+    .settings tbody button{
+        border: 1px solid #31393c;
+        font-weight: bolder;
+        color: #31393c;
+        font-size: larger;
+        padding: 5vh 5vw;
+    }
+    .settings tbody button:hover{
+        color: #fff;
+        background-color: #31393c;
+    }
     ul{
     padding-left: 1%;
     color: aliceblue;
     height: 100vh;
     font-family: monospace;
-    font-size: xx-large;
+    font-size: large;
     gap: 20px;
     display: flex;
     flex-direction: column;
@@ -18,7 +90,7 @@
     top: 0;
     left: 0;
     background: #31393c;
-    width: 260px;
+    width: 200px;
     }
     li{
         color: #FFF;
@@ -28,6 +100,7 @@
         color:#282A29;
     }
     a{  
+        padding-top:10px;
         text-decoration: none;
     }
     table {
@@ -43,20 +116,20 @@
     </style>
 </head>
 <body>
-<nav>
-    <ul>
-        <a href="#"><img src="mimg.jpg" alt="" style = "width:250px; height:200px "></a>
-        <a href="website.php"><li>Go to Website</li></a>
-        <a href="#"><li onclick ="displayContainer('settings')">News</li></a>
-        <a href="#"><li onclick ="displayContainer('settings')">Events</li></a>
-        <a href="#"><li onclick ="displayContainer('settings')">Announcement</li></a>
-        <a href="#"><li onclick ="displayContainer('settings')">Product</li></a>
-        <a href="#"><li onclick ="displayContainer('settings')">Service</li></a>
-        <a href="#"><li onclick ="displayContainer('settings')">Customer</li></a>
-        <a href="#"><li onclick ="displayContainer('settings')">User</li></a>
-        <a href="#"><li onclick ="displayContainer('settings')">Settings</li></a>
-    </ul>
-</nav>
+    <nav>
+        <ul>
+            <a href="#"><img src="logo.png" alt="" style = "width:100px; margin-left:20%; "></a>
+            <a href="website.php"><li>Go to Website</li></a>
+            <a href="#"><li onclick ="displayContainer('news')">News</li></a>
+            <a href="#"><li onclick ="displayContainer('events')">Events</li></a>
+            <a href="#"><li onclick ="displayContainer('Announcement')">Announcement</li></a>
+            <a href="#"><li onclick ="displayContainer('Product')">Product</li></a>
+            <a href="#"><li onclick ="displayContainer('Service')">Service</li></a>
+            <a href="#"><li onclick ="displayContainer('customer-table')">Customer</li></a>
+            <a href="#"><li onclick ="displayContainer('user-table')">User</li></a>
+            <a href="#"><li onclick ="displayContainer('settings')">Settings</li></a>
+        </ul>
+    </nav>
 
 
 
@@ -64,104 +137,68 @@
 
 <!-- hide elements -->
 <!-- usertable -->
-<table cellspacing="5" cellpadding="5" border  = "1" id = "user-table">
-            <tr>
-            <th>User ID</th>
+    <table cellspacing="5" cellpadding="5" border="1" id="user-table">
+        <tr>
             <th>User Name</th>
             <th>Email Address</th>
             <th>Address</th>
             <th>Action</th>
-            </tr>
-            <?php
-                $servername = "localhost";
-                $username = "root";
-                $password = "";
-                $database = "";
+        </tr>
+        <?php
+            // Sample user data
+            $users = array(
+                array("name" => "John Doe", "email" => "john@example.com", "addr" => "123 Main St"),
+                array("name" => "Jane Smith", "email" => "jane@example.com", "addr" => "456 Elm St"),
+                // Add more users if needed
+            );
 
-                $connection = new mysqli($servername,$username,$password,$database);
+            // Loop through the user data and create table rows for each user
+            foreach($users as $user){
+                echo "<tr>";
+                echo "<td>" . $user['name'] . "</td>";
+                echo "<td>" . $user['email'] . "</td>";
+                echo "<td>" . $user['addr'] . "</td>";
+                echo "<td>";
+                echo "<a href='edit-user.php?id=" . $user['name'] . "'><button id='ed'>EDIT</button></a>";
+                echo "<a href='delete-user.php?id=" . $user['name'] . "'><button id='del'>DELETE</button></a>";
+                echo "</td>";
+                echo "</tr>";
+            }
+        ?>
+    </table>
+    <!-- end of user table -->
 
-                // check connection
-                if($connection->connect_error){
-                    die("Connection : ERROR " . $connection->connect_error);
-                }
-
-                //read data
-                $sql = "SELECT * FROM users";
-                $result = $connection->query($sql);
-
-                if(!$result){
-                    die("INVALID query " . $connection->error);
-                }
-
-                
-                while($row = $result->fetch_assoc()){
-                    echo "
-                    <tr>
-                        <td>$row[id]</td>
-                        <td>$row[name]</td>
-                        <td>$row[email]</td>
-                        <td>$row[addr]</td>
-                        <td>
-                            <a href = 'edit-user.php?id=$row[id]'><button id = 'ed'>EDIT</button></a>
-                            <a href = 'delete-user.php?id=$row[id]'><button id = 'del'>DELETE</button></a>
-                        </td>
-                </tr>
-                    ";
-                }
-            ?>
-
-        </table> 
-
-        <!-- end of user table -->
-
-        <!-- customer table -->
-         <table cellspacing="5" cellpadding="5" border = "1" id = "customer-table">
-            <tr>
-            <th>Customer ID</th>
+    <!-- customer table -->
+    <table cellspacing="5" cellpadding="5" border="1" id="customer-table">
+        <tr>
             <th>Customer Name</th>
             <th>Customer Address</th>
             <th>Email Address</th>
             <th>Action</th>
-            </tr>
-            <?php
-                $servername = "sql213.infinityfree.com";
-                $username = "if0_35499800";
-                $password = "QUZXiw4MQuACY";
-                $database = "if0_35499800_kuys";
+        </tr>
+        <?php
+            // Sample customer data
+            $customers = array(
+                array( "name" => "John Doe", "email" => "john@example.com", "addr" => "123 Main St"),
+                array("name" => "Jane Smith", "email" => "jane@example.com", "addr" => "456 Elm St")
+                // Add more customers if needed
+            );
 
-                $connection = new mysqli($servername,$username,$password,$database);
-
-                // check connection
-                if($connection->connect_error){
-                    die("Connection : ERROR " . $connection->connect_error);
-                }
-
-                //read data
-                $sql = "SELECT * FROM customers";
-                $result = $connection->query($sql);
-
-                if(!$result){
-                    die("INVALID query " . $connection->error);
-                }
-
-                
-                while($row = $result->fetch_assoc()){
-                    echo "
-                    <tr>
-                        <td>$row[id]</td>
-                        <td>$row[name]</td>
-                        <td>$row[email]</td>
-                        <td>$row[addr]</td>
-                        <td>
-                            <a href = 'edit-customer.php?id=$row[id]'><button id ='ed'>EDIT</button></a>
-                            <a href = 'delete-customer.php?id=$row[id]'><button id = 'del'>DELETE</button></a>
-                        </td>
-                </tr>
-                    ";
-                }
-            ?>
-        </table>
-        <!-- end of table -->
+            // Loop through the customer data and create table rows for each customer
+            foreach($customers as $customer){
+                echo "<tr>";
+                echo "<td>" . $customer['name'] . "</td>";
+                echo "<td>" . $customer['addr'] . "</td>";
+                echo "<td>" . $customer['email'] . "</td>";
+                echo "<td>";
+                echo "<a href='edit-customer.php?id=" . $customer['name'] . "'><button id='ed'>EDIT</button></a>";
+                echo "<a href='delete-customer.php?id=" . $customer['name'] . "'><button id='del'>DELETE</button></a>";
+                echo "</td>";
+                echo "</tr>";
+            }
+        ?>
+    </table>
+    <!-- end of table -->
 
         
         <!-- settings -->
@@ -174,10 +211,10 @@
             
             <tbody>
                 <tr>
-                    <td><a href="create-user.php"><button>Add Data Users</button></a></td>
+                    <td><a href="addUsers.html"><button>Add Data Users</button></a></td>
                 </tr>
                 <td>
-                    <a href="create-customer.php"><button>Add Data Customer</button></a></td>
+                    <a href="addCustomers.html"><button>Add Data Customer</button></a></td>
                 </tr>
             </tbody>
             

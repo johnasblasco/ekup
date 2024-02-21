@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customers>
+    <customer>
+        <name>John Doe</name>
+        <email>john@example.com</email>
+        <addr>123 Main St</addr>
+    </customer>
+    <customer>
+        <name>Jane Smith</name>
+        <email>jane@example.com</email>
+        <addr>456 Elm St</addr>
+    </customer>
+    <!-- Add more customer entries here if needed -->
+<user><name>JOHNAS LACUNA BLASCO</name><email>johnas.blasco.l@bulsu.edu.ph</email><addr/></user></customers>
