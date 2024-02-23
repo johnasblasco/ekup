@@ -70,67 +70,62 @@
     <h2>Edit user</h2>
     
     <?php
-// Retrieve user name from URL parameter
 $userName = $_GET['name'] ?? '';
 
-// Load the XML file
 $xml = simplexml_load_file('users.xml');
 
-// Check if the XML file was loaded successfully
 if ($xml) {
-    // Search for the user node with the given name
     $userFound = false;
     foreach ($xml->user as $user) {
-        if ($user->name == $userName) {
+        if (strcasecmp($user->name, $userName) === 0) {
             $userFound = true;
-            $userName = htmlspecialchars($user->name);
+            $name = htmlspecialchars($user->name);
             $email = htmlspecialchars($user->email);
             $addr = htmlspecialchars($user->addr);
 
-            // Display the edit form
+            echo "<h2>Edit user</h2>";
             echo "<form action='edit-user.php' method='post'>";
-            echo "<input type='hidden' name='name' value='$userName'>";
-            echo "user Name: <input type='text' name='name' value='$userName' required><br><br>";
+            echo "<input type='hidden' name='original_name' value='$name'>";
+            echo "User Name: <input type='text' name='edited_name' value='$name' required><br><br>";
             echo "Email Address: <input type='email' name='email' value='$email' required><br><br>";
             echo "Address: <input type='text' name='addr' value='$addr' required><br><br>";
             echo "<input type='submit' value='Update'>";
-            echo "<a href = 'admin.php'><button>Back to Home</button></a>";
+            echo "<a href='admin.php'><button>Back to Home</button></a>";
             echo "</form>";
             break;
         }
     }
 
     if (!$userFound) {
-        echo "user not found.";
+        echo "User not found.";
     }
 } else {
     echo "Error loading XML file.";
 }
 
-// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $name = $_POST["name"];
+    $originalName = $_POST["original_name"];
+    $editedName = $_POST["edited_name"];
     $email = $_POST["email"];
     $addr = $_POST["addr"];
 
-    // Search for the user node with the given name and update its details
     foreach ($xml->user as $user) {
-        if ($user->name == $name) {
+        if (strcasecmp($user->name, $originalName) === 0) {
+            $user->name = $editedName;
             $user->email = $email;
             $user->addr = $addr;
             break;
         }
     }
 
-    // Save the changes back to the XML file
     $xml->asXML("users.xml");
 
-    // Redirect back to the user table page
     header("Location: admin.php");
     exit();
 }
 ?>
+
+
 
 
 </body>

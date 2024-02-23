@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Customer</title>
+    <title>Edit customer</title>
 </head>
 <style>
         body {
@@ -70,67 +70,62 @@
     <h2>Edit Customer</h2>
     
     <?php
-// Retrieve customer name from URL parameter
 $customerName = $_GET['name'] ?? '';
 
-// Load the XML file
 $xml = simplexml_load_file('customers.xml');
 
-// Check if the XML file was loaded successfully
 if ($xml) {
-    // Search for the customer node with the given name
     $customerFound = false;
     foreach ($xml->customer as $customer) {
-        if ($customer->name == $customerName) {
+        if (strcasecmp($customer->name, $customerName) === 0) {
             $customerFound = true;
-            $customerName = htmlspecialchars($customer->name);
+            $name = htmlspecialchars($customer->name);
             $email = htmlspecialchars($customer->email);
             $addr = htmlspecialchars($customer->addr);
 
-            // Display the edit form
+            echo "<h2>Edit customer</h2>";
             echo "<form action='edit-customer.php' method='post'>";
-            echo "<input type='hidden' name='name' value='$customerName'>";
-            echo "Customer Name: <input type='text' name='name' value='$customerName' required><br><br>";
+            echo "<input type='hidden' name='original_name' value='$name'>";
+            echo "customer Name: <input type='text' name='edited_name' value='$name' required><br><br>";
             echo "Email Address: <input type='email' name='email' value='$email' required><br><br>";
             echo "Address: <input type='text' name='addr' value='$addr' required><br><br>";
             echo "<input type='submit' value='Update'>";
-            echo "<a href = 'admin.php'><button>Back to Home</button></a>";
+            echo "<a href='admin.php'><button>Back to Home</button></a>";
             echo "</form>";
             break;
         }
     }
 
     if (!$customerFound) {
-        echo "Customer not found.";
+        echo "customer not found.";
     }
 } else {
     echo "Error loading XML file.";
 }
 
-// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $name = $_POST["name"];
+    $originalName = $_POST["original_name"];
+    $editedName = $_POST["edited_name"];
     $email = $_POST["email"];
     $addr = $_POST["addr"];
 
-    // Search for the customer node with the given name and update its details
     foreach ($xml->customer as $customer) {
-        if ($customer->name == $name) {
+        if (strcasecmp($customer->name, $originalName) === 0) {
+            $customer->name = $editedName;
             $customer->email = $email;
             $customer->addr = $addr;
             break;
         }
     }
 
-    // Save the changes back to the XML file
     $xml->asXML("customers.xml");
 
-    // Redirect back to the customer table page
     header("Location: admin.php");
     exit();
 }
 ?>
+
+
 
 
 </body>

@@ -1,32 +1,40 @@
 <?php
-// Check if the name parameter is set in the URL
-if(isset($_GET['name'])) {
-    $customerName = $_GET['name'];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["name"])) {
+    $name = $_POST["name"];
 
     // Load the XML file
-    $xml = simplexml_load_file('customers.xml');
+    $xml = simplexml_load_file("customers.xml");
 
-    // Check if the XML file was loaded successfully
-    if ($xml) {
-        // Search for the user node with the given name and remove it
-        foreach ($xml->customer as $index => $customer) {
-            if ($customer->name == $customerName) {
-                unset($xml->customer[$index]);
-                break;
-            }
-        }
-
-        // Save the changes back to the XML file
-        $xml->asXML('customers.xml');
-
-        // Redirect back to the user table page
-        header("Location: admin.php");
-        exit();
-    } else {
-        echo "Error loading XML file.";
+    if ($xml === false) {
+        die('Error: Cannot load XML file');
     }
+
+    $customerFound = false;
+
+    // Loop through each customer to find the one with the matching name
+    foreach ($xml->customer as $customer) {
+        if ($customer->name == $name) {
+            // Remove the customer node
+            $dom = dom_import_simplexml($customer);
+            $dom->parentNode->removeChild($dom);
+            $customerFound = true;
+            break;
+        }
+    }
+
+    if (!$customerFound) {
+        die('Error: customer not found');
+    }
+
+    // Save the changes back to the XML file
+    $xml->asXML("customers.xml");
+
+    // Redirect back to the delete.html page after deleting the record
+    header("Location: admin.php");
+    exit();
 } else {
-    // If the name parameter is not set, redirect to an error page or handle the error accordingly
-    echo "User name not provided.";
+    // If the form is not submitted or required data is missing, redirect to index.html
+    header("Location: admin.php");
+    exit();
 }
 ?>

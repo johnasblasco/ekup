@@ -135,72 +135,77 @@
 
 <!-- hide elements -->
 <!-- usertable -->
-    <table cellspacing="5" cellpadding="5" border="1" id="user-table">
-        <tr>
-            <th>User Name</th>
-            <th>User Address</th>
-            <th>Email Address</th>
-            <th>Action</th>s
-        </tr>
-        <?php
-            // Read the XML file and convert it into a SimpleXMLElement object
-            $xml = simplexml_load_file('users.xml');
+<table cellspacing="5" cellpadding="5" border="1" id="user-table">
+    <tr>
+        <th>User Name</th>
+        <th>User Address</th>
+        <th>Email Address</th>
+        <th>Action</th>
+    </tr>
+    <?php
+    // Read the XML file and convert it into a SimpleXMLElement object
+    $xml = simplexml_load_file('users.xml');
 
-            // Check if the XML file was loaded successfully
-            if ($xml) {
-                // Loop through each <customer> element in the XML and extract data
-                foreach ($xml->user as $user) {
-                    echo "<tr>";
-                    echo "<td>" . $user->name . "</td>";
-                    echo "<td>" . $user->email . "</td>";
-                    echo "<td>" . $user->addr . "</td>";
-                    echo "<td>";
-                    echo "<a href='edit-user.php?name=" . $user->name . "'><button id='ed'>EDIT</button></a>";
-                    echo "<a href='delete-user.php?name=" . $user->name . "'><button id='del'>DELETE</button></a>";
-                    echo "</td>";
-                    echo "</tr>";
-                }
-            } else {
-                // Handle the case when the XML file cannot be loaded
-                echo "Error loading XML file.";
-            }
-        ?>
-    </table>
-
+    // Check if the XML file was loaded successfully
+    if ($xml) {
+        // Loop through each <customer> element in the XML and extract data
+        foreach ($xml->user as $user) {
+            echo "<tr>";
+            echo "<td>" . $user->name . "</td>";
+            echo "<td>" . $user->email . "</td>";
+            echo "<td>" . $user->addr . "</td>";
+            echo "<td>";
+            echo "<a href='edit-user.php?name=" . $user->name . "'><button id='ed'>EDIT</button></a>";
+            echo "<form action='delete-user.php' method='post'>";
+            echo "<input type='hidden' name='name' value='" . $user->name . "'>";
+            echo "<button type='submit' id='del'>DELETE</button>";
+            echo "</form>";
+            echo "</td>";
+            echo "</tr>";
+        }
+    } else {
+        // Handle the case when the XML file cannot be loaded
+        echo "Error loading XML file.";
+    }
+    ?>
+</table>
     <!-- end of user table -->
 
     <!-- customer table -->
     <table cellspacing="5" cellpadding="5" border="1" id="customer-table">
     <tr>
-        <th>Customer Name</th>
-        <th>Customer Address</th>
+        <th>User Name</th>
+        <th>User Address</th>
         <th>Email Address</th>
         <th>Action</th>
     </tr>
     <?php
-        // Read the XML file and convert it into a SimpleXMLElement object
-        $xml = simplexml_load_file('customers.xml');
+    // Read the XML file and convert it into a SimpleXMLElement object
+    $xml = simplexml_load_file('customers.xml');
 
-        // Check if the XML file was loaded successfully
-        if ($xml) {
-            // Loop through each <customer> element in the XML and extract data
-            foreach ($xml->customer as $customer) {
-                echo "<tr>";
-                echo "<td>" . $customer->name . "</td>";
-                echo "<td>" . $customer->email . "</td>";
-                echo "<td>" . $customer->addr . "</td>";
-                
-                echo "<td>";
-                echo "<a href='edit-customer.php?name=" . urlencode($customer->name) . "'><button id='ed'>EDIT</button></a>";
-                echo "<a href='delete-customer.php?name=" . urlencode($customer->name) . "' ><button id='del'>DELETE</button></a>";
-                echo "</td>";
-                echo "</tr>";
-            }
-        } else {
-            echo "Error loading XML file.";
+    // Check if the XML file was loaded successfully
+    if ($xml) {
+        // Loop through each <customer> element in the XML and extract data
+        foreach ($xml->customer as $customer) {
+            echo "<tr>";
+            echo "<td>" . $customer->name . "</td>";
+            echo "<td>" . $customer->email . "</td>";
+            echo "<td>" . $customer->addr . "</td>";
+            echo "<td>";
+            echo "<a href='edit-customer.php?name=" . $customer->name . "'><button id='ed'>EDIT</button></a>";
+            echo "<form action='delete-customer.php' method='post'>";
+            echo "<input type='hidden' name='name' value='" . $customer->name . "'>";
+            echo "<button type='submit' id='del'>DELETE</button>";
+            echo "</form>";
+            echo "</td>";
+            echo "</tr>";
         }
+    } else {
+        // Handle the case when the XML file cannot be loaded
+        echo "Error loading XML file.";
+    }
     ?>
-    </table>
+</table>
 
 <!-- end of customer table -->
 
